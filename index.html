@@ -694,6 +694,129 @@
     /* ============================================================
        PRINT / PDF EXPORT
        ============================================================ */
+    /* ============================================================
+       GRID VIEW OVERLAY
+       ============================================================ */
+    .grid-overlay {
+        position: fixed;
+        top: var(--menu-h);
+        left: 0; right: 0; bottom: 0;
+        background: rgba(10, 8, 18, 0.97);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        z-index: 700;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 32px 36px 48px;
+        box-sizing: border-box;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+    }
+    .grid-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 28px 22px;
+    }
+    .slide-thumb-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        cursor: pointer;
+    }
+    .slide-thumb-frame {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        position: relative;
+        border-radius: 4px;
+        border: 2px solid rgba(255,255,255,0.07);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+        transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    }
+    .slide-thumb-cell:hover .slide-thumb-frame {
+        border-color: rgba(255,255,255,0.22);
+        box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+        transform: translateY(-2px);
+    }
+    .slide-thumb-cell.is-current .slide-thumb-frame {
+        border-color: var(--ms-pistachio);
+        box-shadow: 0 0 0 1px var(--ms-pistachio), 0 6px 24px rgba(0,0,0,0.5);
+    }
+    .slide-thumb-inner {
+        position: absolute;
+        top: 0; left: 0;
+        width: 1280px;
+        height: 720px;
+        transform-origin: top left;
+        pointer-events: none;
+        overflow: hidden;
+    }
+    /* Force all slide states visible inside thumbnails */
+    .slide-thumb-inner > .slide {
+        position: relative !important;
+        inset: auto !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        transition: none !important;
+        width: 1280px !important;
+        height: 720px !important;
+        display: flex !important;
+        flex-shrink: 0 !important;
+    }
+    .slide-thumb-inner .reveal {
+        opacity: 1 !important;
+        transform: none !important;
+        animation: none !important;
+    }
+    .slide-thumb-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .slide-thumb-num {
+        font-family: 'AntarcticanMono', 'Courier New', monospace;
+        font-size: 8px;
+        color: rgba(255,255,255,0.25);
+        flex-shrink: 0;
+    }
+    .slide-thumb-title {
+        font-family: 'AntarcticanMono', 'Courier New', monospace;
+        font-size: 9px;
+        letter-spacing: 0.5px;
+        color: rgba(255,255,255,0.5);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: color 0.15s;
+    }
+    .slide-thumb-cell.is-current .slide-thumb-title {
+        color: var(--ms-pistachio);
+    }
+    .slide-thumb-cell:hover .slide-thumb-title {
+        color: rgba(255,255,255,0.8);
+    }
+    .slide-thumb-hint {
+        font-family: 'AntarcticanMono', 'Courier New', monospace;
+        font-size: 8px;
+        letter-spacing: 0.5px;
+        color: rgba(255,255,255,0.14);
+        text-align: center;
+        padding-top: 8px;
+    }
+
+    /* Active state for grid button */
+    .menu-btn.btn-active {
+        background: rgba(116,166,134,0.12);
+        border-color: rgba(116,166,134,0.35);
+        color: var(--ms-pistachio);
+    }
+
     @media print {
         @page {
             size: 1280px 720px;
@@ -797,6 +920,17 @@
 
         <!-- Right: Controls -->
         <div class="menu-controls">
+
+            <!-- Grid view button -->
+            <button class="menu-btn" id="btnGrid" title="Grid view (G)">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="1" y="1" width="6" height="4.5" rx="0.75"/>
+                    <rect x="9" y="1" width="6" height="4.5" rx="0.75"/>
+                    <rect x="1" y="8" width="6" height="4.5" rx="0.75"/>
+                    <rect x="9" y="8" width="6" height="4.5" rx="0.75"/>
+                </svg>
+                <span>Grid</span>
+            </button>
 
             <!-- Search / jump — wrapper for relative dropdown positioning -->
             <div class="search-wrapper">
@@ -966,6 +1100,12 @@
 
     </main><!-- /stage -->
 
+    <!-- Grid view overlay -->
+    <div id="gridOverlay" class="grid-overlay">
+        <div id="gridContainer" class="grid-container"></div>
+        <p class="slide-thumb-hint">Double-click a slide to jump to it &nbsp;·&nbsp; G or Esc to close</p>
+    </div>
+
     <!-- Exit immersive / fullscreen button (bottom-right corner) -->
     <button id="exitImmersiveBtn" class="exit-immersive-btn" title="Exit presentation (Esc)">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1065,6 +1205,7 @@
         document.addEventListener('keydown', e => {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
             if (e.metaKey || e.ctrlKey || e.altKey) return;
+            if (gridOpen) return;
 
             if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'Backspace') {
                 e.preventDefault();
@@ -1099,6 +1240,7 @@
         let lastWheelTime = 0;
         stageEl.addEventListener('wheel', e => {
             e.preventDefault();
+            if (gridOpen) return;
             const now = Date.now();
             if (now - lastWheelTime < 600) return;
             lastWheelTime = now;
@@ -1154,6 +1296,107 @@
                 toggleFullscreen();
             }
         });
+
+        /* ----------------------------------------------------------
+           Grid view
+           ---------------------------------------------------------- */
+        const btnGrid      = document.getElementById('btnGrid');
+        const gridOverlay  = document.getElementById('gridOverlay');
+        const gridContainer= document.getElementById('gridContainer');
+        let gridOpen = false;
+
+        function openGrid() {
+            // Build thumbnails
+            gridContainer.innerHTML = '';
+            slides.forEach((slide, i) => {
+                const title = slide.dataset.title || `Slide ${i + 1}`;
+
+                const cell = document.createElement('div');
+                cell.className = 'slide-thumb-cell' + (i === current ? ' is-current' : '');
+                cell.dataset.idx = i;
+
+                // Thumbnail frame
+                const frame = document.createElement('div');
+                frame.className = 'slide-thumb-frame';
+
+                const inner = document.createElement('div');
+                inner.className = 'slide-thumb-inner';
+
+                // Clone slide HTML (deep clone of the real slide)
+                const clone = slide.cloneNode(true);
+                clone.classList.remove('active');
+                inner.appendChild(clone);
+                frame.appendChild(inner);
+
+                // Label row
+                const label = document.createElement('div');
+                label.className = 'slide-thumb-label';
+                label.innerHTML = `<span class="slide-thumb-num">${i + 1}</span><span class="slide-thumb-title">${title}</span>`;
+
+                cell.appendChild(frame);
+                cell.appendChild(label);
+                gridContainer.appendChild(cell);
+            });
+
+            // Scale thumbnails to fit their cells
+            requestAnimationFrame(() => {
+                scaleThumbFrames();
+                // Scroll current slide into view
+                const currentCell = gridContainer.querySelector('.is-current');
+                if (currentCell) currentCell.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            });
+
+            gridOverlay.classList.add('open');
+            btnGrid.classList.add('btn-active');
+            gridOpen = true;
+        }
+
+        function closeGrid() {
+            gridOverlay.classList.remove('open');
+            btnGrid.classList.remove('btn-active');
+            gridOpen = false;
+        }
+
+        function scaleThumbFrames() {
+            gridContainer.querySelectorAll('.slide-thumb-frame').forEach(frame => {
+                const w = frame.getBoundingClientRect().width;
+                const scale = w / 1280;
+                const inner = frame.querySelector('.slide-thumb-inner');
+                if (inner) inner.style.transform = `scale(${scale})`;
+            });
+        }
+
+        // Re-scale on window resize
+        window.addEventListener('resize', () => { if (gridOpen) scaleThumbFrames(); });
+
+        btnGrid.addEventListener('click', e => {
+            e.stopPropagation();
+            if (gridOpen) closeGrid(); else openGrid();
+        });
+
+        // Double-click a thumbnail to jump
+        gridContainer.addEventListener('dblclick', e => {
+            const cell = e.target.closest('.slide-thumb-cell');
+            if (!cell) return;
+            goTo(parseInt(cell.dataset.idx));
+            closeGrid();
+        });
+
+        // G key toggles grid
+        document.addEventListener('keydown', e => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if ((e.key === 'g' || e.key === 'G') && !e.metaKey && !e.ctrlKey) {
+                e.preventDefault();
+                if (gridOpen) closeGrid(); else openGrid();
+            }
+            if (e.key === 'Escape' && gridOpen) {
+                e.stopPropagation();
+                closeGrid();
+            }
+        });
+
+        // Block slide navigation while grid is open
+        // (handled inline in existing nav — add guard)
 
         /* ----------------------------------------------------------
            PDF Export
