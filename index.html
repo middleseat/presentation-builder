@@ -1103,7 +1103,7 @@
     <!-- Grid view overlay -->
     <div id="gridOverlay" class="grid-overlay">
         <div id="gridContainer" class="grid-container"></div>
-        <p class="slide-thumb-hint">Double-click a slide to jump to it &nbsp;·&nbsp; G or Esc to close</p>
+        <p class="slide-thumb-hint">Click a slide to jump to it &nbsp;·&nbsp; G or Esc to close</p>
     </div>
 
     <!-- Exit immersive / fullscreen button (bottom-right corner) -->
@@ -1375,7 +1375,7 @@
         });
 
         // Double-click a thumbnail to jump
-        gridContainer.addEventListener('dblclick', e => {
+        gridContainer.addEventListener('click', e => {
             const cell = e.target.closest('.slide-thumb-cell');
             if (!cell) return;
             goTo(parseInt(cell.dataset.idx));
