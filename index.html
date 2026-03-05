@@ -607,11 +607,17 @@
             <button class="menu-btn" id="btnFullscreen" title="Toggle fullscreen (F)">
                 <!-- Enter fullscreen icon -->
                 <svg id="iconEnterFS" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M1 6V2h4M10 2h4v4M15 10v4h-4M6 14H2v-4"/>
+                    <polyline points="1,5 1,1 5,1"/>
+                    <polyline points="11,1 15,1 15,5"/>
+                    <polyline points="15,11 15,15 11,15"/>
+                    <polyline points="5,15 1,15 1,11"/>
                 </svg>
                 <!-- Exit fullscreen icon (hidden by default) -->
                 <svg id="iconExitFS" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-                    <path d="M5 1v4H1M11 1v4h4M1 11h4v4M15 11h-4v4"/>
+                    <polyline points="5,1 5,5 1,5"/>
+                    <polyline points="11,5 15,5 15,1"/>
+                    <polyline points="15,11 11,11 11,15"/>
+                    <polyline points="1,11 5,11 5,15"/>
                 </svg>
                 <span>Fullscreen</span>
             </button>
@@ -859,6 +865,19 @@
             if (e.target.closest('.nav-dots') || e.target.closest('.menu-bar')) return;
             next();
         });
+
+        /* ----------------------------------------------------------
+           Two-finger trackpad / scroll wheel navigation
+           ---------------------------------------------------------- */
+        let lastWheelTime = 0;
+        stageEl.addEventListener('wheel', e => {
+            e.preventDefault();
+            const now = Date.now();
+            if (now - lastWheelTime < 600) return;
+            lastWheelTime = now;
+            if (e.deltaY > 0) next();
+            else if (e.deltaY < 0) prev();
+        }, { passive: false });
 
         /* ----------------------------------------------------------
            Fullscreen
