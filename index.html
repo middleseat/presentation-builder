@@ -513,25 +513,31 @@
     /* ============================================================
        SEARCH PANEL
        ============================================================ */
+    .search-wrapper {
+        position: relative;
+    }
     .search-panel {
-        position: fixed;
-        top: calc(var(--menu-h) + 8px);
-        right: 12px;
-        width: 260px;
-        background: rgba(16, 13, 24, 0.96);
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        width: 280px;
+        background: rgba(16, 13, 24, 0.97);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.12);
         border-radius: 8px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.4);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.65), 0 2px 8px rgba(0,0,0,0.4);
         z-index: 900;
         overflow: hidden;
-        display: none;
-        animation: searchDrop 0.18s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+        pointer-events: none;
+        transition: opacity 0.16s ease, transform 0.16s cubic-bezier(0.34, 1.4, 0.64, 1);
     }
-    @keyframes searchDrop {
-        from { opacity: 0; transform: translateY(-6px) scale(0.98); }
-        to   { opacity: 1; transform: translateY(0) scale(1); }
+    .search-panel.open {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
     }
     .search-input {
         width: 100%;
@@ -539,29 +545,30 @@
         background: transparent;
         border: none;
         border-bottom: 1px solid rgba(255,255,255,0.08);
-        color: rgba(255,255,255,0.88);
+        color: rgba(255,255,255,0.9);
         font-family: 'AntarcticanMono', 'Courier New', monospace;
         font-size: 10px;
         letter-spacing: 0.5px;
         outline: none;
         box-sizing: border-box;
     }
-    .search-input::placeholder { color: rgba(255,255,255,0.3); }
+    .search-input::placeholder { color: rgba(255,255,255,0.28); }
     .search-results {
         list-style: none;
         margin: 0;
         padding: 4px 0;
-        max-height: 220px;
+        max-height: 240px;
         overflow-y: auto;
+        scroll-behavior: smooth;
     }
-    .search-results::-webkit-scrollbar { width: 4px; }
+    .search-results::-webkit-scrollbar { width: 3px; }
     .search-results::-webkit-scrollbar-track { background: transparent; }
-    .search-results::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+    .search-results::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
     .search-result-item {
         display: flex;
         align-items: center;
         gap: 10px;
-        padding: 8px 13px;
+        padding: 9px 13px;
         cursor: pointer;
         transition: background 0.1s;
         border-left: 2px solid transparent;
@@ -574,24 +581,29 @@
     .search-result-num {
         font-family: 'AntarcticanMono', 'Courier New', monospace;
         font-size: 8px;
-        color: rgba(255,255,255,0.28);
+        color: rgba(255,255,255,0.25);
         min-width: 16px;
         text-align: right;
+        flex-shrink: 0;
     }
     .search-result-title {
         font-family: 'AntarcticanMono', 'Courier New', monospace;
         font-size: 9px;
         letter-spacing: 0.5px;
-        color: rgba(255,255,255,0.78);
+        color: rgba(255,255,255,0.75);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+    .search-result-item.is-current {
+        background: rgba(116,166,134,0.08);
+        border-left-color: rgba(116,166,134,0.5);
     }
     .search-result-item.is-current .search-result-title {
         color: var(--ms-pistachio);
     }
     .search-result-item.is-current .search-result-num {
-        color: rgba(116,166,134,0.5);
+        color: rgba(116,166,134,0.55);
     }
 
     /* ============================================================
@@ -628,7 +640,7 @@
         bottom: 28px;
         right: 28px;
         z-index: 9999;
-        display: none;
+        display: flex;
         align-items: center;
         gap: 7px;
         background: rgba(16, 13, 24, 0.82);
@@ -647,8 +659,7 @@
         transition: opacity 0.2s ease, transform 0.2s ease, background 0.15s, color 0.15s;
         pointer-events: none;
     }
-    html.immersive .exit-immersive-btn { display: flex; }
-    .exit-immersive-btn.btn-visible {
+    html.immersive .exit-immersive-btn.btn-visible {
         opacity: 1;
         transform: translateY(0);
         pointer-events: auto;
@@ -783,14 +794,16 @@
         <!-- Right: Controls -->
         <div class="menu-controls">
 
-            <!-- Search / jump button -->
-            <button class="menu-btn" id="btnSearch" title="Search slides (/)">
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="6.5" cy="6.5" r="4"/>
-                    <line x1="9.5" y1="9.5" x2="14" y2="14"/>
-                </svg>
-                <span>Search</span>
-            </button>
+            <!-- Search / jump — wrapper for relative dropdown positioning -->
+            <div class="search-wrapper">
+                <button class="menu-btn" id="btnSearch" title="Search slides (/)">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="6.5" cy="6.5" r="4"/>
+                        <line x1="9.5" y1="9.5" x2="14" y2="14"/>
+                    </svg>
+                    <span>Search</span>
+                </button>
+            </div>
 
             <!-- Fullscreen button -->
             <button class="menu-btn" id="btnFullscreen" title="Toggle fullscreen (F)">
@@ -1042,7 +1055,11 @@
                 e.preventDefault();
                 prev();
             } else if (e.key === 'Escape') {
-                // Let browser handle Escape for fullscreen exit
+                // Exit immersive mode; browser also handles native FS exit
+                document.documentElement.classList.remove('immersive');
+                document.exitFullscreen().catch(() => {});
+                updateFSIcon();
+                setTimeout(updateSlideWidth, 100);
                 return;
             } else if (e.key === 'Tab') {
                 return;
@@ -1093,15 +1110,24 @@
 
         btnFS.addEventListener('click', e => {
             e.stopPropagation();
-            toggleFullscreen();
+            const entering = !document.documentElement.classList.contains('immersive');
+            document.documentElement.classList.toggle('immersive', entering);
+            if (entering) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
+            updateFSIcon();
+            setTimeout(updateSlideWidth, 100);
         });
 
         document.addEventListener('fullscreenchange', () => {
-            const isFS = !!document.fullscreenElement;
-            document.documentElement.classList.toggle('immersive', isFS);
-            updateFSIcon();
-            // Re-measure after fullscreen transition completes
-            setTimeout(updateSlideWidth, 100);
+            // Sync immersive class if native FS exits via Esc or other means
+            if (!document.fullscreenElement) {
+                document.documentElement.classList.remove('immersive');
+                updateFSIcon();
+                setTimeout(updateSlideWidth, 100);
+            }
         });
 
         // F key shortcut
@@ -1129,25 +1155,51 @@
 
         /* ----------------------------------------------------------
            Search / slide jump
+           Build the panel DOM and inject into .search-wrapper
            ---------------------------------------------------------- */
-        const btnSearch      = document.getElementById('btnSearch');
-        const searchPanel    = document.getElementById('searchPanel');
-        const searchInput    = document.getElementById('searchInput');
-        const searchResultsEl= document.getElementById('searchResults');
+        const btnSearch = document.getElementById('btnSearch');
+        const searchWrapper = btnSearch.parentElement;
+
+        // Build panel DOM
+        const searchPanel = document.createElement('div');
+        searchPanel.id = 'searchPanel';
+        searchPanel.className = 'search-panel';
+
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.id = 'searchInput';
+        searchInput.className = 'search-input';
+        searchInput.placeholder = 'Jump to slide…';
+        searchInput.autocomplete = 'off';
+        searchInput.spellcheck = false;
+
+        const searchResultsEl = document.createElement('ul');
+        searchResultsEl.id = 'searchResults';
+        searchResultsEl.className = 'search-results';
+
+        searchPanel.appendChild(searchInput);
+        searchPanel.appendChild(searchResultsEl);
+        searchWrapper.appendChild(searchPanel);
+
         let searchOpen = false;
         let kbFocusIdx = -1;
 
         function openSearch() {
-            searchPanel.style.display = '';
             searchInput.value = '';
             kbFocusIdx = -1;
             renderSearch('');
-            requestAnimationFrame(() => searchInput.focus());
+            searchPanel.classList.add('open');
+            // Scroll current slide into view after paint
+            requestAnimationFrame(() => {
+                searchInput.focus();
+                const currentItem = searchResultsEl.querySelector('.is-current');
+                if (currentItem) currentItem.scrollIntoView({ block: 'center' });
+            });
             searchOpen = true;
         }
 
         function closeSearch() {
-            searchPanel.style.display = 'none';
+            searchPanel.classList.remove('open');
             searchOpen = false;
             kbFocusIdx = -1;
         }
@@ -1214,9 +1266,7 @@
 
         // Click outside to close
         document.addEventListener('click', e => {
-            if (searchOpen && !e.target.closest('#searchPanel') && !e.target.closest('#btnSearch')) {
-                closeSearch();
-            }
+            if (searchOpen && !searchWrapper.contains(e.target)) closeSearch();
         });
 
         // "/" key opens search
@@ -1235,8 +1285,13 @@
 
         document.addEventListener('mousemove', e => {
             if (!document.documentElement.classList.contains('immersive')) return;
-            const nearCorner = e.clientX > window.innerWidth - 160 && e.clientY > window.innerHeight - 100;
+            const nearCorner = e.clientX > window.innerWidth - 200 && e.clientY > window.innerHeight - 120;
             exitImmersiveBtn.classList.toggle('btn-visible', nearCorner);
+        });
+
+        // Also keep visible when hovering the button itself
+        exitImmersiveBtn.addEventListener('mouseenter', () => {
+            exitImmersiveBtn.classList.add('btn-visible');
         });
 
         exitImmersiveBtn.addEventListener('click', e => {
@@ -1247,11 +1302,7 @@
     })();
     </script>
 
-    <!-- Search panel (fixed overlay) -->
-    <div id="searchPanel" class="search-panel">
-        <input type="text" id="searchInput" class="search-input" placeholder="Jump to slide…" autocomplete="off" spellcheck="false">
-        <ul class="search-results" id="searchResults"></ul>
-    </div>
+
 
     <!-- Exit immersive / fullscreen button (bottom-right corner) -->
     <button id="exitImmersiveBtn" class="exit-immersive-btn" title="Exit presentation (Esc)">
