@@ -962,6 +962,17 @@
 
     </main><!-- /stage -->
 
+    <!-- Exit immersive / fullscreen button (bottom-right corner) -->
+    <button id="exitImmersiveBtn" class="exit-immersive-btn" title="Exit presentation (Esc)">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="5,1 5,5 1,5"/>
+            <polyline points="11,1 11,5 15,5"/>
+            <polyline points="15,11 11,11 11,15"/>
+            <polyline points="1,11 5,11 5,15"/>
+        </svg>
+        <span>Exit</span>
+    </button>
+
     <script>
     /* ============================================================
        PRESENTATION CONTROLLER
@@ -1307,19 +1318,5 @@
 
     })();
     </script>
-
-
-
-    <!-- Exit immersive / fullscreen button (bottom-right corner) -->
-    <button id="exitImmersiveBtn" class="exit-immersive-btn" title="Exit presentation (Esc)">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="5,1 5,5 1,5"/>
-            <polyline points="11,1 11,5 15,5"/>
-            <polyline points="15,11 11,11 11,15"/>
-            <polyline points="1,11 5,11 5,15"/>
-        </svg>
-        <span>Exit</span>
-    </button>
-
 </body>
 </html>
