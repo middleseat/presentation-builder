@@ -1295,14 +1295,17 @@
         const exitImmersiveBtn = document.getElementById('exitImmersiveBtn');
 
         let exitBtnTimer;
-        function showExitBtn() {
-            exitImmersiveBtn.classList.add('btn-visible');
-            clearTimeout(exitBtnTimer);
-            exitBtnTimer = setTimeout(() => exitImmersiveBtn.classList.remove('btn-visible'), 2500);
-        }
-        // Any mouse movement while immersive shows the button briefly
-        document.addEventListener('mousemove', () => {
-            if (document.documentElement.classList.contains('immersive')) showExitBtn();
+        // Show button when mouse is in bottom-right 1/5 of screen
+        document.addEventListener('mousemove', e => {
+            if (!document.documentElement.classList.contains('immersive')) return;
+            const inZone = e.clientX > window.innerWidth * 0.8 && e.clientY > window.innerHeight * 0.8;
+            if (inZone) {
+                exitImmersiveBtn.classList.add('btn-visible');
+                clearTimeout(exitBtnTimer);
+            } else {
+                clearTimeout(exitBtnTimer);
+                exitBtnTimer = setTimeout(() => exitImmersiveBtn.classList.remove('btn-visible'), 400);
+            }
         });
         // Keep visible while cursor is on the button itself
         exitImmersiveBtn.addEventListener('mouseenter', () => {
