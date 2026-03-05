@@ -1,136 +1,107 @@
-# Frontend Slides
+# Middle Seat Presentation Builder
 
-A Claude Code skill for creating stunning, animation-rich HTML presentations — from scratch or by converting PowerPoint files.
+A Claude Code skill for creating beautiful, on-brand HTML presentations in Middle Seat style. Forked from [zarazhangrui/frontend-slides](https://github.com/zarazhangrui/frontend-slides) and fully adapted for the Middle Seat brand system.
 
-## What This Does
+---
 
-**Frontend Slides** helps non-designers create beautiful web presentations without knowing CSS or JavaScript. It uses a "show, don't tell" approach: instead of asking you to describe your aesthetic preferences in words, it generates visual previews and lets you pick what you like.
+## What It Does
 
-Here is a deck about the skill, made through the skill:
+Generates zero-dependency, single-file HTML presentations using Middle Seat brand typography, colors, and layout — Cardo headings, Proxima Nova body text, Antarctican Mono labels, and the full pistachio/lavender/slate color palette. Decks run entirely in the browser with no npm, no build tools, and no external dependencies (except font CDN links).
 
-https://github.com/user-attachments/assets/ef57333e-f879-432a-afb9-180388982478
+**Four MS-exclusive visual presets:**
 
+| Preset | Mood | Best For |
+|--------|------|----------|
+| MS Classic | Professional, editorial | Internal briefings, status updates |
+| MS Bold | High-impact, dark | Campaign pitches, fundraising asks |
+| MS Data | Analytics-forward | Polling reports, dashboards |
+| MS Proposal | Warm, relationship-first | New business, client pitches |
 
-### Key Features
+---
 
-- **Zero Dependencies** — Single HTML files with inline CSS/JS. No npm, no build tools, no frameworks.
-- **Visual Style Discovery** — Can't articulate design preferences? No problem. Pick from generated visual previews.
-- **PPT Conversion** — Convert existing PowerPoint files to web, preserving all images and content.
-- **Anti-AI-Slop** — Curated distinctive styles that avoid generic AI aesthetics (bye-bye, purple gradients on white).
-- **Production Quality** — Accessible, responsive, well-commented code you can customize.
+## Prerequisites
 
-## Installation
+You need:
+- [Claude Code](https://claude.ai/code)
+- Middle Seat brand assets at `~/middleseat/brand_assets/` (fonts + logos)
+- An internet connection (for Typekit/Google Fonts CDN on generated slides)
 
-### For Claude Code Users
-
-Copy the skill files to your Claude Code skills directory:
-
+Optional for PPT conversion:
 ```bash
-# Create the skill directory
-mkdir -p ~/.claude/skills/frontend-slides/scripts
-
-# Copy all files (or clone this repo directly)
-cp SKILL.md STYLE_PRESETS.md viewport-base.css html-template.md animation-patterns.md ~/.claude/skills/frontend-slides/
-cp scripts/extract-pptx.py ~/.claude/skills/frontend-slides/scripts/
+pip install python-pptx
 ```
 
-Or clone directly:
-
-```bash
-git clone https://github.com/zarazhangrui/frontend-slides.git ~/.claude/skills/frontend-slides
-```
-
-Then use it by typing `/frontend-slides` in Claude Code.
+---
 
 ## Usage
 
-### Create a New Presentation
+In a Claude Code session, type:
 
 ```
-/frontend-slides
-
-> "I want to create a pitch deck for my AI startup"
+/presentation-builder
 ```
 
-The skill will:
-1. Ask about your content (slides, messages, images)
-2. Ask about the feeling you want (impressed? excited? calm?)
-3. Generate 3 visual style previews for you to compare
-4. Create the full presentation in your chosen style
-5. Open it in your browser
+Claude will guide you through:
+1. **Content discovery** — Purpose, length, content readiness, editing preferences
+2. **Style selection** — 3 visual previews based on your chosen mood, or pick a preset directly
+3. **Generation** — Full branded HTML deck with embedded brand fonts and inlined MS logo
+4. **Delivery** — Opens in your browser, ready to present
 
-### Convert a PowerPoint
+---
+
+## File Structure
 
 ```
-/frontend-slides
-
-> "Convert my presentation.pptx to a web slideshow"
+presentation-builder/
+├── SKILL.md               # Claude Code skill — main workflow
+├── MS_BRAND.md            # Middle Seat brand reference (colors, fonts, logo, components)
+├── STYLE_PRESETS.md       # 4 MS visual presets with full CSS specs
+├── viewport-base.css      # Mandatory responsive CSS (included in all generated decks)
+├── html-template.md       # HTML architecture and JS patterns
+├── animation-patterns.md  # CSS/JS animation reference
+├── scripts/
+│   └── extract-pptx.py   # PowerPoint content extraction
+└── demo/
+    └── middle-seat-capabilities.html  # Sample MS Classic deck
 ```
 
-The skill will:
-1. Extract all text, images, and notes from your PPT
-2. Show you the extracted content for confirmation
-3. Let you pick a visual style
-4. Generate an HTML presentation with all your original assets
+---
 
-## Included Styles
+## Brand Assets Used
 
-### Dark Themes
-- **Bold Signal** — Confident, high-impact, vibrant card on dark
-- **Electric Studio** — Clean, professional, split-panel
-- **Creative Voltage** — Energetic, retro-modern, electric blue + neon
-- **Dark Botanical** — Elegant, sophisticated, warm accents
+The skill reads these files at generation time:
 
-### Light Themes
-- **Notebook Tabs** — Editorial, organized, paper with colorful tabs
-- **Pastel Geometry** — Friendly, approachable, vertical pills
-- **Split Pastel** — Playful, modern, two-color vertical split
-- **Vintage Editorial** — Witty, personality-driven, geometric shapes
+| Asset | Path | How Used |
+|-------|------|----------|
+| Antarctican Mono font | `~/middleseat/brand_assets/fonts/AntarcticanMono-Medium.ttf` | Base64-embedded in every deck |
+| Horizontal logo | `~/middleseat/brand_assets/logos/MS-horizontal.svg` | Inlined SVG in header bars and covers |
+| Proxima Nova | Adobe Typekit CDN | Loaded via `<link>` in `<head>` |
+| Cardo | Google Fonts CDN | Loaded via `<link>` in `<head>` |
 
-### Specialty
-- **Neon Cyber** — Futuristic, particle backgrounds, neon glow
-- **Terminal Green** — Developer-focused, hacker aesthetic
-- **Swiss Modern** — Minimal, Bauhaus-inspired, geometric
-- **Paper & Ink** — Literary, drop caps, pull quotes
+---
 
-## Architecture
+## Demo Deck
 
-This skill uses **progressive disclosure** — the main `SKILL.md` is a concise map (~180 lines), with supporting files loaded on-demand only when needed:
+See [`demo/middle-seat-capabilities.html`](demo/middle-seat-capabilities.html) for a sample 7-slide capabilities deck in MS Classic style.
 
-| File | Purpose | Loaded When |
-|------|---------|-------------|
-| `SKILL.md` | Core workflow and rules | Always (skill invocation) |
-| `STYLE_PRESETS.md` | 12 curated visual presets | Phase 2 (style selection) |
-| `viewport-base.css` | Mandatory responsive CSS | Phase 3 (generation) |
-| `html-template.md` | HTML structure and JS features | Phase 3 (generation) |
-| `animation-patterns.md` | CSS/JS animation reference | Phase 3 (generation) |
-| `scripts/extract-pptx.py` | PPT content extraction | Phase 4 (conversion) |
+---
 
-This design follows [OpenAI's harness engineering](https://openai.com/index/harness-engineering/) principle: "give the agent a map, not a 1,000-page instruction manual."
+## Customizing Generated Decks
 
-## Philosophy
+All generated HTML files use CSS custom properties. Edit the `:root` block at the top of the `<style>` tag to change:
 
-This skill was born from the belief that:
+```css
+:root {
+    --ms-pistachio: #74A686;   /* primary accent color */
+    --ms-lavender-1: #F6F4FA;  /* background */
+    /* ... */
+}
+```
 
-1. **You don't need to be a designer to make beautiful things.** You just need to react to what you see.
+Font swap: update the `<link>` tags in `<head>` for Cardo and Proxima Nova.
 
-2. **Dependencies are debt.** A single HTML file will work in 10 years. A React project from 2019? Good luck.
+---
 
-3. **Generic is forgettable.** Every presentation should feel custom-crafted, not template-generated.
+## Original Credit
 
-4. **Comments are kindness.** Code should explain itself to future-you (or anyone else who opens it).
-
-## Requirements
-
-- [Claude Code](https://claude.ai/claude-code) CLI
-- For PPT conversion: Python with `python-pptx` library
-
-## Credits
-
-Created by [@zarazhangrui](https://github.com/zarazhangrui) with Claude Code.
-
-Inspired by the "Vibe Coding" philosophy — building beautiful things without being a traditional software engineer.
-
-## License
-
-MIT — Use it, modify it, share it.
+Built on top of [frontend-slides](https://github.com/zarazhangrui/frontend-slides) by [@zarazhangrui](https://github.com/zarazhangrui) — an excellent Claude Code skill for zero-dependency HTML presentations. Middle Seat brand adaptation by the Middle Seat team.

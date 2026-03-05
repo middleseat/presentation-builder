@@ -1,347 +1,282 @@
-# Style Presets Reference
+# Middle Seat Style Presets
 
-Curated visual styles for Frontend Slides. Each preset is inspired by real design references — no generic "AI slop" aesthetics. **Abstract shapes only — no illustrations.**
+Four curated visual presets for generating Middle Seat presentations. Every preset uses the Middle Seat brand typography and color system — they differ in background tone, layout energy, and animation character.
 
-**Viewport CSS:** For mandatory base styles, see [viewport-base.css](viewport-base.css). Include in every presentation.
+Read [MS_BRAND.md](MS_BRAND.md) for complete CSS components, font loading, and logo embedding instructions.
 
 ---
 
-## Dark Themes
+## Preset 1: MS Classic
 
-### 1. Bold Signal
+**Mood:** Professional, editorial, trustworthy  
+**Best for:** Internal briefings, general-purpose presentations, campaign status updates
 
-**Vibe:** Confident, bold, modern, high-impact
+### Signature Look
 
-**Layout:** Colored card on dark gradient. Number top-left, navigation top-right, title bottom-left.
+- Background: lavender_1 `#F6F4FA` — the primary MS background
+- Headings: Cardo Regular, slate_2 `#363140`
+- Body: Proxima Nova, slate_1 `#4D4759`
+- Labels/data: Antarctican Mono, lavender_6 `#7E778C`
+- Accent: pistachio `#74A686` — progress bar, stat numbers, card borders, accent bars
+- Header bar on every interior slide with MS horizontal logo (dark version)
+- Cover: `linear-gradient(135deg, #F6F4FA 0%, #EAE6F2 100%)`
+- Pistachio accent bar (3px) on cover between logo and title
+- Animations: Clean fade-up with staggered reveals (`translateY(20px)` → `translateY(0)`, 0.5s ease-out)
+- Nav dots: pistachio fill, lavender_3 for inactive
 
-**Typography:**
-- Display: `Archivo Black` (900)
-- Body: `Space Grotesk` (400/500)
+### CSS Variables (add to `:root`)
 
-**Colors:**
 ```css
-:root {
-    --bg-primary: #1a1a1a;
-    --bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
-    --card-bg: #FF5722;
-    --text-primary: #ffffff;
-    --text-on-card: #1a1a1a;
+/* MS Classic additions */
+--preset-bg: var(--ms-lavender-1);
+--preset-surface: var(--ms-lavender-2);
+--preset-border: var(--ms-lavender-3);
+--preset-heading: var(--ms-slate-2);
+--preset-body: var(--ms-slate-1);
+--preset-muted: var(--ms-lavender-6);
+--preset-accent: var(--ms-pistachio);
+--preset-accent-2: var(--ms-lime);
+```
+
+### Key Layout Signatures
+
+- Cover: Logo centered top → pistachio accent bar → large Cardo title → Antarctican Mono subtitle
+- Interior header: Left-aligned logo, 1px lavender_3 bottom border
+- Slide content top-padded to clear header (~60px)
+- Section intro slides: Left-aligned `h2` + pistachio 40px wide `border-left` vertical accent
+- Bullet points: `::before` pseudo-element using pistachio circle (6px diameter)
+- Closing: Peppermint gradient background, white Cardo heading, white logo
+
+### Recommended for These Slide Types
+
+Title, content, feature grid, stat callout, table, quote, closing
+
+---
+
+## Preset 2: MS Bold
+
+**Mood:** High-impact, confident, campaign-energy  
+**Best for:** Campaign pitches, fundraising asks, launch announcements, urgent calls to action
+
+### Signature Look
+
+- Background: slate_2/3 dark `linear-gradient(135deg, #363140 0%, #201D26 100%)`
+- Headings: Cardo, white `#FFFFFF`
+- Body: Proxima Nova, lavender_1 `#F6F4FA` (slightly softened from pure white)
+- Labels: Antarctican Mono, `rgba(246, 244, 250, 0.6)` (muted white)
+- Primary accent: pistachio `#74A686` — glows, borders, CTAs
+- Secondary accent: cantaloupe `#F2A26D` — for contrast against pistachio
+- MS logo: WHITE version (replace `#16151A` fills with `#FFFFFF`)
+- Cover: Full-bleed dark bg, pistachio left border `8px` on title, white Cardo heading
+- Animations: Bold punch — `scale(0.96)` → `scale(1)` + fade-in, 0.4s ease-out. More immediate than Classic.
+- Stat numbers: Extra large Cardo in pistachio, drop-shadow: `0 0 30px rgba(116,166,134,0.3)`
+
+### CSS Variables (add to `:root`)
+
+```css
+/* MS Bold additions */
+--preset-bg: #201D26;
+--preset-surface: rgba(255, 255, 255, 0.06);
+--preset-border: rgba(255, 255, 255, 0.1);
+--preset-heading: #FFFFFF;
+--preset-body: #F6F4FA;
+--preset-muted: rgba(246, 244, 250, 0.55);
+--preset-accent: var(--ms-pistachio);
+--preset-accent-2: var(--ms-cantaloupe);
+```
+
+### Key Layout Signatures
+
+- Cover: Full-dark background, logo centered (white), large left-aligned Cardo title with 8px pistachio left-border, Antarctican Mono subtitle in muted-white
+- Interior slides: No header bar — logo appears as small subtle element bottom-right (`position: absolute; bottom: 20px; right: 20px; opacity: 0.5`)
+- Feature cards: Glassmorphism cards — `background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px`
+- Stats: Centered pistachio numbers with cantaloupe accent bars above
+- Bullet points: `::before` pistachio `—` dash (en dash, not bullet)
+- Closing: Pistachio-to-lime Peppermint gradient, white text, centered
+
+### Recommended for These Slide Types
+
+Title, content, stat callout, feature grid, closing. Avoid dense table slides in MS Bold.
+
+---
+
+## Preset 3: MS Data
+
+**Mood:** Analytical, evidence-forward, rigorous  
+**Best for:** Polling reports, fundraising dashboards, digital performance reviews, research presentations
+
+### Signature Look
+
+- Background: lavender_1 `#F6F4FA` (same as Classic)
+- Headings: Cardo, slate_2 `#363140`
+- Body: Proxima Nova, slate_1 `#4D4759`
+- Labels/data: Antarctican Mono — prominently used, more than any other preset
+- Pistachio `#74A686` for leading metrics, key numbers, chart color #1
+- Cantaloupe `#F2A26D` for chart color #2
+- Layout: Dense information hierarchy — multiple stats visible per slide
+- Animations: Subtle — numbers count up on entry (`data-target` counter JS), bars slide in
+- Tables: Always fully styled with alternating rows, leader highlighting
+
+### CSS Variables (add to `:root`)
+
+```css
+/* MS Data additions */
+--preset-bg: var(--ms-lavender-1);
+--preset-surface: var(--ms-lavender-2);
+--preset-border: var(--ms-lavender-3);
+--preset-heading: var(--ms-slate-2);
+--preset-body: var(--ms-slate-1);
+--preset-muted: var(--ms-lavender-6);
+--preset-accent: var(--ms-pistachio);
+--preset-accent-2: var(--ms-cantaloupe);
+```
+
+### Key Layout Signatures
+
+- Cover: Same gradient as Classic, but subtitle uses Antarctican Mono with "PREPARED BY MIDDLE SEAT" footer
+- Interior header: Same as Classic, but adds slide-level `data-label` in top-right (Antarctican Mono, lavender_6)
+- Stat callout slides: 2-3 stats in a grid. Each `stat-box` has pistachio `border-top: 3px`. Numbers animate counting up on `.visible`
+- Chart placeholder areas: `lavender_2` fills with dashed `lavender_3` border and centered Antarctican Mono label: "CHART AREA"
+- Table slides: Full-width tables with all standard MS table styles. First column bold. Leader row highlighted in lime.
+- Color dot legend: Use `.dot` class with correct color order (see MS_BRAND.md)
+- Footer on every slide: 1px `lavender_3` top border, Antarctican Mono `CONFIDENTIAL · MIDDLE SEAT · [MONTH YEAR]`
+
+### Counter Animation JS
+
+Add to SlidePresentation class for stat slides:
+
+```javascript
+animateCounters(slide) {
+    slide.querySelectorAll('[data-target]').forEach(el => {
+        const target = parseFloat(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        const prefix = el.dataset.prefix || '';
+        const isDecimal = el.dataset.decimal === 'true';
+        let current = 0;
+        const increment = target / 60;
+        const timer = setInterval(() => {
+            current = Math.min(current + increment, target);
+            el.textContent = prefix + (isDecimal ? current.toFixed(1) : Math.round(current)) + suffix;
+            if (current >= target) clearInterval(timer);
+        }, 16);
+    });
 }
 ```
 
-**Signature Elements:**
-- Bold colored card as focal point (orange, coral, or vibrant accent)
-- Large section numbers (01, 02, etc.)
-- Navigation breadcrumbs with active/inactive opacity states
-- Grid-based layout for precise alignment
+Usage in HTML:
+```html
+<span class="number" data-target="47" data-suffix="%">0%</span>
+```
+
+### Recommended for These Slide Types
+
+Stat callout (primary), table, content with bullets, chart area placeholder. Cover and closing same as MS Classic.
 
 ---
 
-### 2. Electric Studio
+## Preset 4: MS Proposal
 
-**Vibe:** Bold, clean, professional, high contrast
+**Mood:** Warm, professional, relationship-first  
+**Best for:** New business pitches, client onboarding, agency overview, partnership proposals
 
-**Layout:** Split panel—white top, blue bottom. Brand marks in corners.
+### Signature Look
 
-**Typography:**
-- Display: `Manrope` (800)
-- Body: `Manrope` (400/500)
+- Cover: Full-bleed Peppermint gradient (`linear-gradient(135deg, #74A686 0%, #CED998 100%)`), white logo, white Cardo title
+- Interior backgrounds: White `#FFFFFF` (warmer than Classic's lavender)
+- Section divider slides: lavender_1 background with large Cardo section number (pistachio, very large, semi-transparent)
+- Headings: Cardo, slate_2
+- Body: Proxima Nova, slate_1
+- Pull-quote slides: pistachio `4px` left border, italic Cardo quote, Antarctican Mono attribution
+- Timeline/process slides: Horizontal steps with pistachio connectors and numbered circles
+- Closing: Grapefruit gradient background (`linear-gradient(135deg, #FFBCAD 0%, #FFADAD 100%)`), slate_2 text (warm, inviting)
+- Animations: Slightly slower, more graceful — 0.6s ease-out, elements slide in from `translateY(24px)`
 
-**Colors:**
+### CSS Variables (add to `:root`)
+
 ```css
-:root {
-    --bg-dark: #0a0a0a;
-    --bg-white: #ffffff;
-    --accent-blue: #4361ee;
-    --text-dark: #0a0a0a;
-    --text-light: #ffffff;
+/* MS Proposal additions */
+--preset-bg: #FFFFFF;
+--preset-surface: var(--ms-lavender-1);
+--preset-border: var(--ms-lavender-3);
+--preset-heading: var(--ms-slate-2);
+--preset-body: var(--ms-slate-1);
+--preset-muted: var(--ms-lavender-6);
+--preset-accent: var(--ms-pistachio);
+--preset-accent-2: var(--ms-cantaloupe);
+```
+
+### Key Layout Signatures
+
+- Cover: White MS logo centered, below it the Cardo title in white, Antarctican Mono subtitle in `rgba(255,255,255,0.75)`, pistachio accent bar
+- Interior slides: Thin left-rail accent — 4px pistachio vertical bar, 32px left padding to content
+- Section intro slides: Large Cardo numeral (`01`, `02`) in `rgba(116,166,134,0.15)` as background watermark, section title overlaid in slate_2
+- Process/timeline: Numbered circles (pistachio bg, white number) connected by pistachio dashed line
+- Pull-quote: `border-left: 4px solid var(--ms-pistachio)` on `<blockquote>`, italic Cardo, Antarctican Mono attribution in lavender_6
+- Closing: Grapefruit gradient (peach → watermelon), slate_2 headings, pistachio CTA button or link
+
+### Process/Timeline Component
+
+```css
+.timeline {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    width: 100%;
+    max-width: 700px;
+}
+
+.timeline-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.timeline-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    right: calc(-50% + 0px);
+    height: 2px;
+    background: linear-gradient(to right, var(--ms-pistachio), var(--ms-lime));
+    z-index: 0;
+}
+
+.step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--ms-pistachio);
+    color: white;
+    font-family: 'AntarcticanMono', monospace;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0.75em;
+}
+
+.step-label {
+    font-family: 'Cardo', serif;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+    color: var(--ms-slate-2);
+    text-align: center;
+}
+
+.step-desc {
+    font-family: 'proxima-nova', sans-serif;
+    font-size: clamp(0.6rem, 0.9vw, 0.75rem);
+    color: var(--ms-slate-1);
+    text-align: center;
+    margin-top: 0.25em;
+    line-height: 1.4;
 }
 ```
 
-**Signature Elements:**
-- Two-panel vertical split
-- Accent bar on panel edge
-- Quote typography as hero element
-- Minimal, confident spacing
+### Recommended for These Slide Types
 
----
-
-### 3. Creative Voltage
-
-**Vibe:** Bold, creative, energetic, retro-modern
-
-**Layout:** Split panels—electric blue left, dark right. Script accents.
-
-**Typography:**
-- Display: `Syne` (700/800)
-- Mono: `Space Mono` (400/700)
-
-**Colors:**
-```css
-:root {
-    --bg-primary: #0066ff;
-    --bg-dark: #1a1a2e;
-    --accent-neon: #d4ff00;
-    --text-light: #ffffff;
-}
-```
-
-**Signature Elements:**
-- Electric blue + neon yellow contrast
-- Halftone texture patterns
-- Neon badges/callouts
-- Script typography for creative flair
-
----
-
-### 4. Dark Botanical
-
-**Vibe:** Elegant, sophisticated, artistic, premium
-
-**Layout:** Centered content on dark. Abstract soft shapes in corner.
-
-**Typography:**
-- Display: `Cormorant` (400/600) — elegant serif
-- Body: `IBM Plex Sans` (300/400)
-
-**Colors:**
-```css
-:root {
-    --bg-primary: #0f0f0f;
-    --text-primary: #e8e4df;
-    --text-secondary: #9a9590;
-    --accent-warm: #d4a574;
-    --accent-pink: #e8b4b8;
-    --accent-gold: #c9b896;
-}
-```
-
-**Signature Elements:**
-- Abstract soft gradient circles (blurred, overlapping)
-- Warm color accents (pink, gold, terracotta)
-- Thin vertical accent lines
-- Italic signature typography
-- **No illustrations—only abstract CSS shapes**
-
----
-
-## Light Themes
-
-### 5. Notebook Tabs
-
-**Vibe:** Editorial, organized, elegant, tactile
-
-**Layout:** Cream paper card on dark background. Colorful tabs on right edge.
-
-**Typography:**
-- Display: `Bodoni Moda` (400/700) — classic editorial
-- Body: `DM Sans` (400/500)
-
-**Colors:**
-```css
-:root {
-    --bg-outer: #2d2d2d;
-    --bg-page: #f8f6f1;
-    --text-primary: #1a1a1a;
-    --tab-1: #98d4bb; /* Mint */
-    --tab-2: #c7b8ea; /* Lavender */
-    --tab-3: #f4b8c5; /* Pink */
-    --tab-4: #a8d8ea; /* Sky */
-    --tab-5: #ffe6a7; /* Cream */
-}
-```
-
-**Signature Elements:**
-- Paper container with subtle shadow
-- Colorful section tabs on right edge (vertical text)
-- Binder hole decorations on left
-- Tab text must scale with viewport: `font-size: clamp(0.5rem, 1vh, 0.7rem)`
-
----
-
-### 6. Pastel Geometry
-
-**Vibe:** Friendly, organized, modern, approachable
-
-**Layout:** White card on pastel background. Vertical pills on right edge.
-
-**Typography:**
-- Display: `Plus Jakarta Sans` (700/800)
-- Body: `Plus Jakarta Sans` (400/500)
-
-**Colors:**
-```css
-:root {
-    --bg-primary: #c8d9e6;
-    --card-bg: #faf9f7;
-    --pill-pink: #f0b4d4;
-    --pill-mint: #a8d4c4;
-    --pill-sage: #5a7c6a;
-    --pill-lavender: #9b8dc4;
-    --pill-violet: #7c6aad;
-}
-```
-
-**Signature Elements:**
-- Rounded card with soft shadow
-- **Vertical pills on right edge** with varying heights (like tabs)
-- Consistent pill width, heights: short → medium → tall → medium → short
-- Download/action icon in corner
-
----
-
-### 7. Split Pastel
-
-**Vibe:** Playful, modern, friendly, creative
-
-**Layout:** Two-color vertical split (peach left, lavender right).
-
-**Typography:**
-- Display: `Outfit` (700/800)
-- Body: `Outfit` (400/500)
-
-**Colors:**
-```css
-:root {
-    --bg-peach: #f5e6dc;
-    --bg-lavender: #e4dff0;
-    --text-dark: #1a1a1a;
-    --badge-mint: #c8f0d8;
-    --badge-yellow: #f0f0c8;
-    --badge-pink: #f0d4e0;
-}
-```
-
-**Signature Elements:**
-- Split background colors
-- Playful badge pills with icons
-- Grid pattern overlay on right panel
-- Rounded CTA buttons
-
----
-
-### 8. Vintage Editorial
-
-**Vibe:** Witty, confident, editorial, personality-driven
-
-**Layout:** Centered content on cream. Abstract geometric shapes as accent.
-
-**Typography:**
-- Display: `Fraunces` (700/900) — distinctive serif
-- Body: `Work Sans` (400/500)
-
-**Colors:**
-```css
-:root {
-    --bg-cream: #f5f3ee;
-    --text-primary: #1a1a1a;
-    --text-secondary: #555;
-    --accent-warm: #e8d4c0;
-}
-```
-
-**Signature Elements:**
-- Abstract geometric shapes (circle outline + line + dot)
-- Bold bordered CTA boxes
-- Witty, conversational copy style
-- **No illustrations—only geometric CSS shapes**
-
----
-
-## Specialty Themes
-
-### 9. Neon Cyber
-
-**Vibe:** Futuristic, techy, confident
-
-**Typography:** `Clash Display` + `Satoshi` (Fontshare)
-
-**Colors:** Deep navy (#0a0f1c), cyan accent (#00ffcc), magenta (#ff00aa)
-
-**Signature:** Particle backgrounds, neon glow, grid patterns
-
----
-
-### 10. Terminal Green
-
-**Vibe:** Developer-focused, hacker aesthetic
-
-**Typography:** `JetBrains Mono` (monospace only)
-
-**Colors:** GitHub dark (#0d1117), terminal green (#39d353)
-
-**Signature:** Scan lines, blinking cursor, code syntax styling
-
----
-
-### 11. Swiss Modern
-
-**Vibe:** Clean, precise, Bauhaus-inspired
-
-**Typography:** `Archivo` (800) + `Nunito` (400)
-
-**Colors:** Pure white, pure black, red accent (#ff3300)
-
-**Signature:** Visible grid, asymmetric layouts, geometric shapes
-
----
-
-### 12. Paper & Ink
-
-**Vibe:** Editorial, literary, thoughtful
-
-**Typography:** `Cormorant Garamond` + `Source Serif 4`
-
-**Colors:** Warm cream (#faf9f7), charcoal (#1a1a1a), crimson accent (#c41e3a)
-
-**Signature:** Drop caps, pull quotes, elegant horizontal rules
-
----
-
-## Font Pairing Quick Reference
-
-| Preset | Display Font | Body Font | Source |
-|--------|--------------|-----------|--------|
-| Bold Signal | Archivo Black | Space Grotesk | Google |
-| Electric Studio | Manrope | Manrope | Google |
-| Creative Voltage | Syne | Space Mono | Google |
-| Dark Botanical | Cormorant | IBM Plex Sans | Google |
-| Notebook Tabs | Bodoni Moda | DM Sans | Google |
-| Pastel Geometry | Plus Jakarta Sans | Plus Jakarta Sans | Google |
-| Split Pastel | Outfit | Outfit | Google |
-| Vintage Editorial | Fraunces | Work Sans | Google |
-| Neon Cyber | Clash Display | Satoshi | Fontshare |
-| Terminal Green | JetBrains Mono | JetBrains Mono | JetBrains |
-
----
-
-## DO NOT USE (Generic AI Patterns)
-
-**Fonts:** Inter, Roboto, Arial, system fonts as display
-
-**Colors:** `#6366f1` (generic indigo), purple gradients on white
-
-**Layouts:** Everything centered, generic hero sections, identical card grids
-
-**Decorations:** Realistic illustrations, gratuitous glassmorphism, drop shadows without purpose
-
----
-
-## CSS Gotchas
-
-### Negating CSS Functions
-
-**WRONG — silently ignored by browsers (no console error):**
-```css
-right: -clamp(28px, 3.5vw, 44px);   /* Browser ignores this */
-margin-left: -min(10vw, 100px);      /* Browser ignores this */
-```
-
-**CORRECT — wrap in `calc()`:**
-```css
-right: calc(-1 * clamp(28px, 3.5vw, 44px));  /* Works */
-margin-left: calc(-1 * min(10vw, 100px));     /* Works */
-```
-
-CSS does not allow a leading `-` before function names. The browser silently discards the entire declaration — no error, the element just appears in the wrong position. **Always use `calc(-1 * ...)` to negate CSS function values.**
-
+Cover (Peppermint), section dividers, content/bullets, pull-quote, process/timeline, feature grid, closing (Grapefruit)
