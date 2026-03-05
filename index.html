@@ -472,6 +472,7 @@
         transition: background 0.25s ease, transform 0.25s var(--spring);
         flex-shrink: 0;
         outline: none;
+        position: relative;
     }
 
     .nav-dot.active {
@@ -482,6 +483,185 @@
     .nav-dot:hover:not(.active) {
         background: rgba(255, 255, 255, 0.4);
         transform: scale(1.2);
+    }
+
+    /* ============================================================
+       DOT TOOLTIP
+       ============================================================ */
+    .dot-tooltip {
+        position: absolute;
+        right: calc(100% + 10px);
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(16, 13, 24, 0.93);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: rgba(255,255,255,0.82);
+        font-family: 'AntarcticanMono', 'Courier New', monospace;
+        font-size: 9px;
+        letter-spacing: 0.6px;
+        white-space: nowrap;
+        padding: 4px 9px;
+        border-radius: 4px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.14s ease;
+    }
+    .nav-dot:hover .dot-tooltip {
+        opacity: 1;
+    }
+
+    /* ============================================================
+       SEARCH PANEL
+       ============================================================ */
+    .search-panel {
+        position: fixed;
+        top: calc(var(--menu-h) + 8px);
+        right: 12px;
+        width: 260px;
+        background: rgba(16, 13, 24, 0.96);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.4);
+        z-index: 900;
+        overflow: hidden;
+        display: none;
+        animation: searchDrop 0.18s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
+    }
+    @keyframes searchDrop {
+        from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .search-input {
+        width: 100%;
+        padding: 10px 13px;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        color: rgba(255,255,255,0.88);
+        font-family: 'AntarcticanMono', 'Courier New', monospace;
+        font-size: 10px;
+        letter-spacing: 0.5px;
+        outline: none;
+        box-sizing: border-box;
+    }
+    .search-input::placeholder { color: rgba(255,255,255,0.3); }
+    .search-results {
+        list-style: none;
+        margin: 0;
+        padding: 4px 0;
+        max-height: 220px;
+        overflow-y: auto;
+    }
+    .search-results::-webkit-scrollbar { width: 4px; }
+    .search-results::-webkit-scrollbar-track { background: transparent; }
+    .search-results::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+    .search-result-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 13px;
+        cursor: pointer;
+        transition: background 0.1s;
+        border-left: 2px solid transparent;
+    }
+    .search-result-item:hover,
+    .search-result-item.kb-focused {
+        background: rgba(116,166,134,0.1);
+        border-left-color: var(--ms-pistachio);
+    }
+    .search-result-num {
+        font-family: 'AntarcticanMono', 'Courier New', monospace;
+        font-size: 8px;
+        color: rgba(255,255,255,0.28);
+        min-width: 16px;
+        text-align: right;
+    }
+    .search-result-title {
+        font-family: 'AntarcticanMono', 'Courier New', monospace;
+        font-size: 9px;
+        letter-spacing: 0.5px;
+        color: rgba(255,255,255,0.78);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .search-result-item.is-current .search-result-title {
+        color: var(--ms-pistachio);
+    }
+    .search-result-item.is-current .search-result-num {
+        color: rgba(116,166,134,0.5);
+    }
+
+    /* ============================================================
+       IMMERSIVE PRESENTATION MODE
+       ============================================================ */
+    html.immersive .menu-bar {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+    }
+    html.immersive .nav-dots {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+    }
+    html.immersive .slide-counter {
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+    html.immersive .stage {
+        top: 0 !important;
+        background: #000 !important;
+        background-image: none !important;
+    }
+    html.immersive .slide-frame {
+        width: min(100vw, 100vh * 16 / 9) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    /* Exit immersive button — appears on hover near bottom-right */
+    .exit-immersive-btn {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        gap: 7px;
+        background: rgba(16, 13, 24, 0.82);
+        border: 1px solid rgba(255,255,255,0.14);
+        border-radius: 6px;
+        color: rgba(255,255,255,0.65);
+        font-family: 'AntarcticanMono', 'Courier New', monospace;
+        font-size: 9px;
+        letter-spacing: 0.5px;
+        padding: 6px 11px 6px 9px;
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        opacity: 0;
+        transform: translateY(4px);
+        transition: opacity 0.2s ease, transform 0.2s ease, background 0.15s, color 0.15s;
+        pointer-events: none;
+    }
+    html.immersive .exit-immersive-btn { display: flex; }
+    .exit-immersive-btn.btn-visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+    .exit-immersive-btn:hover {
+        background: rgba(30, 26, 40, 0.9);
+        color: rgba(255,255,255,0.9);
+        border-color: rgba(255,255,255,0.22);
+    }
+    .exit-immersive-btn svg {
+        width: 11px;
+        height: 11px;
+        flex-shrink: 0;
     }
 
     /* ============================================================
@@ -603,6 +783,15 @@
         <!-- Right: Controls -->
         <div class="menu-controls">
 
+            <!-- Search / jump button -->
+            <button class="menu-btn" id="btnSearch" title="Search slides (/)">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="6.5" cy="6.5" r="4"/>
+                    <line x1="9.5" y1="9.5" x2="14" y2="14"/>
+                </svg>
+                <span>Search</span>
+            </button>
+
             <!-- Fullscreen button -->
             <button class="menu-btn" id="btnFullscreen" title="Toggle fullscreen (F)">
                 <!-- Enter fullscreen icon -->
@@ -615,7 +804,7 @@
                 <!-- Exit fullscreen icon (hidden by default) -->
                 <svg id="iconExitFS" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none">
                     <polyline points="5,1 5,5 1,5"/>
-                    <polyline points="11,5 15,5 15,1"/>
+                    <polyline points="11,1 11,5 15,5"/>
                     <polyline points="15,11 11,11 11,15"/>
                     <polyline points="1,11 5,11 5,15"/>
                 </svg>
@@ -653,7 +842,7 @@
                 <!-- ================================================
                      SLIDE 1 — COVER
                      ================================================ -->
-                <div class="slide slide-cover active" data-index="0">
+                <div class="slide slide-cover active" data-index="0" data-title="Cover">
                     <div class="slide-content">
 
                         <div class="cover-logo reveal">
@@ -686,7 +875,7 @@
                 <!-- ================================================
                      SLIDE 2 — CONTENT
                      ================================================ -->
-                <div class="slide slide-content-slide has-header" data-index="1">
+                <div class="slide slide-content-slide has-header" data-index="1" data-title="Content Slide">
 
                     <div class="slide-header">
                         <div class="inner-logo">
@@ -727,7 +916,7 @@
                 <!-- ================================================
                      SLIDE 3 — CLOSING
                      ================================================ -->
-                <div class="slide slide-closing" data-index="2">
+                <div class="slide slide-closing" data-index="2" data-title="Closing">
                     <div class="slide-content">
 
                         <div class="closing-logo reveal">
@@ -796,11 +985,17 @@
         /* ----------------------------------------------------------
            Build nav dots
            ---------------------------------------------------------- */
-        slides.forEach((_, i) => {
+        slides.forEach((slide, i) => {
             const dot = document.createElement('button');
             dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
-            dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+            const slideTitle = slide.dataset.title || `Slide ${i + 1}`;
+            dot.setAttribute('aria-label', `Go to slide ${i + 1}: ${slideTitle}`);
             dot.dataset.index = i;
+            // Tooltip
+            const tip = document.createElement('span');
+            tip.className = 'dot-tooltip';
+            tip.textContent = slideTitle;
+            dot.appendChild(tip);
             dot.addEventListener('click', e => {
                 e.stopPropagation();
                 goTo(i);
@@ -902,6 +1097,8 @@
         });
 
         document.addEventListener('fullscreenchange', () => {
+            const isFS = !!document.fullscreenElement;
+            document.documentElement.classList.toggle('immersive', isFS);
             updateFSIcon();
             // Re-measure after fullscreen transition completes
             setTimeout(updateSlideWidth, 100);
@@ -930,8 +1127,142 @@
            ---------------------------------------------------------- */
         counterEl.textContent = `1 / ${total}`;
 
+        /* ----------------------------------------------------------
+           Search / slide jump
+           ---------------------------------------------------------- */
+        const btnSearch      = document.getElementById('btnSearch');
+        const searchPanel    = document.getElementById('searchPanel');
+        const searchInput    = document.getElementById('searchInput');
+        const searchResultsEl= document.getElementById('searchResults');
+        let searchOpen = false;
+        let kbFocusIdx = -1;
+
+        function openSearch() {
+            searchPanel.style.display = '';
+            searchInput.value = '';
+            kbFocusIdx = -1;
+            renderSearch('');
+            requestAnimationFrame(() => searchInput.focus());
+            searchOpen = true;
+        }
+
+        function closeSearch() {
+            searchPanel.style.display = 'none';
+            searchOpen = false;
+            kbFocusIdx = -1;
+        }
+
+        function renderSearch(query) {
+            const q = query.toLowerCase().trim();
+            searchResultsEl.innerHTML = '';
+            kbFocusIdx = -1;
+            slides.forEach((slide, i) => {
+                const title = slide.dataset.title || `Slide ${i + 1}`;
+                if (!q || title.toLowerCase().includes(q)) {
+                    const li = document.createElement('li');
+                    li.className = 'search-result-item' + (i === current ? ' is-current' : '');
+                    li.dataset.idx = i;
+                    li.innerHTML = `<span class="search-result-num">${i + 1}</span><span class="search-result-title">${title}</span>`;
+                    li.addEventListener('mousedown', e => {
+                        e.preventDefault();
+                        goTo(i);
+                        closeSearch();
+                    });
+                    searchResultsEl.appendChild(li);
+                }
+            });
+        }
+
+        function getResultItems() {
+            return [...searchResultsEl.querySelectorAll('.search-result-item')];
+        }
+
+        function setKbFocus(idx) {
+            const items = getResultItems();
+            items.forEach(el => el.classList.remove('kb-focused'));
+            if (idx >= 0 && idx < items.length) {
+                items[idx].classList.add('kb-focused');
+                items[idx].scrollIntoView({ block: 'nearest' });
+                kbFocusIdx = idx;
+            } else {
+                kbFocusIdx = -1;
+            }
+        }
+
+        btnSearch.addEventListener('click', e => {
+            e.stopPropagation();
+            if (searchOpen) closeSearch(); else openSearch();
+        });
+
+        searchInput.addEventListener('input', () => renderSearch(searchInput.value));
+
+        searchInput.addEventListener('keydown', e => {
+            const items = getResultItems();
+            if (e.key === 'Escape') { e.preventDefault(); closeSearch(); return; }
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                setKbFocus(Math.min(kbFocusIdx + 1, items.length - 1));
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                setKbFocus(Math.max(kbFocusIdx - 1, 0));
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                const target = kbFocusIdx >= 0 ? items[kbFocusIdx] : items[0];
+                if (target) { goTo(parseInt(target.dataset.idx)); closeSearch(); }
+            }
+        });
+
+        // Click outside to close
+        document.addEventListener('click', e => {
+            if (searchOpen && !e.target.closest('#searchPanel') && !e.target.closest('#btnSearch')) {
+                closeSearch();
+            }
+        });
+
+        // "/" key opens search
+        document.addEventListener('keydown', e => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.key === '/' && !e.metaKey && !e.ctrlKey) {
+                e.preventDefault();
+                if (searchOpen) closeSearch(); else openSearch();
+            }
+        });
+
+        /* ----------------------------------------------------------
+           Immersive mode — exit button appears near bottom-right
+           ---------------------------------------------------------- */
+        const exitImmersiveBtn = document.getElementById('exitImmersiveBtn');
+
+        document.addEventListener('mousemove', e => {
+            if (!document.documentElement.classList.contains('immersive')) return;
+            const nearCorner = e.clientX > window.innerWidth - 160 && e.clientY > window.innerHeight - 100;
+            exitImmersiveBtn.classList.toggle('btn-visible', nearCorner);
+        });
+
+        exitImmersiveBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            document.exitFullscreen().catch(() => {});
+        });
+
     })();
     </script>
+
+    <!-- Search panel (fixed overlay) -->
+    <div id="searchPanel" class="search-panel">
+        <input type="text" id="searchInput" class="search-input" placeholder="Jump to slide…" autocomplete="off" spellcheck="false">
+        <ul class="search-results" id="searchResults"></ul>
+    </div>
+
+    <!-- Exit immersive / fullscreen button (bottom-right corner) -->
+    <button id="exitImmersiveBtn" class="exit-immersive-btn" title="Exit presentation (Esc)">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="5,1 5,5 1,5"/>
+            <polyline points="11,1 11,5 15,5"/>
+            <polyline points="15,11 11,11 11,15"/>
+            <polyline points="1,11 5,11 5,15"/>
+        </svg>
+        <span>Exit</span>
+    </button>
 
 </body>
 </html>
